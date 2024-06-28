@@ -1,8 +1,5 @@
 # Pengelola Saldo Bank
 
-## Flowchart
-![Flowchart](flowchart.png)
-
 ```mermaid
 flowchart TD
     A[Mulai] --> B[Inisialisasi Rekening]
