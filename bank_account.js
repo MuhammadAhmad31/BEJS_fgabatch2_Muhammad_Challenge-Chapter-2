@@ -1,51 +1,42 @@
-let saldo = 0;
+class BankAccount {
+  constructor(initialBalance = 0) {
+      this.balance = initialBalance;
+  }
 
-function convertToRupiah(number) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR'
-  }).format(number);
-}
+  convertToRupiah(number) {
+      return new Intl.NumberFormat('id-ID', {
+          style: 'currency',
+          currency: 'IDR'
+      }).format(number);
+  }
 
-function updateSaldoDisplay() {
-  document.getElementById(
-    "saldoDisplay"
-  ).innerText = `Saldo saat ini: ${convertToRupiah(saldo)}`;
-}
+  _processTransaction(amount, type) {
+      return new Promise((resolve, reject) => {
+          setTimeout(() => {
+              if (amount <= 0) {
+                  reject('Invalid transaction amount.');
+              } else if (type === 'deposit') {
+                  this.balance += amount;
+                  resolve(`Deposit successful. New balance: ${this.convertToRupiah(this.balance)}`);
+              } else if (type === 'withdraw') {
+                  if (amount > this.balance) {
+                      reject('Amount exceeds current balance.');
+                  } else {
+                      this.balance -= amount;
+                      resolve(`Withdrawal successful. New balance: ${this.convertToRupiah(this.balance)}`);
+                  }
+              }
+          }, 1000);
+      });
+  }
 
-function tambahSaldo() {
-  let jumlah = parseFloat(
-    window.prompt("Masukkan jumlah saldo yang ingin ditambahkan:")
-  );
+  deposit(amount) {
+      return this._processTransaction(amount, 'deposit');
+  }
 
-  if (!isNaN(jumlah) && jumlah > 0) {
-    saldo += jumlah;
-    alert(`Saldo berhasil ditambah. Saldo baru: ${convertToRupiah(saldo)}`);
-    updateSaldoDisplay();
-  } else {
-    alert("Jumlah yang dimasukkan tidak valid.");
+  withdraw(amount) {
+      return this._processTransaction(amount, 'withdraw');
   }
 }
 
-function kurangiSaldo() {
-  let jumlah = parseFloat(
-    window.prompt("Masukkan jumlah saldo yang ingin dikurangi:")
-  );
-
-  if (!isNaN(jumlah) && jumlah > 0 && jumlah <= saldo) {
-    saldo -= jumlah;
-    alert(`Saldo berhasil dikurangi. Saldo baru: ${convertToRupiah(saldo)}`);
-    updateSaldoDisplay();
-  } else if (jumlah > saldo) {
-    alert("Jumlah yang dimasukkan melebihi saldo saat ini.");
-  } else {
-    alert("Jumlah yang dimasukkan tidak valid.");
-  }
-}
-
-window.onload = function () {
-  updateSaldoDisplay();
-
-  document.getElementById("tambahSaldoBtn").onclick = tambahSaldo;
-  document.getElementById("kurangiSaldoBtn").onclick = kurangiSaldo;
-};
+export default BankAccount;
